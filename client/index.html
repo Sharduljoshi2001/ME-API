@@ -59,10 +59,7 @@
             try {
                 //fetching all projects first (Backend filtering is also an option, 
                 // but client-side filtering is smoother for small datasets)
-                //hum seedha /projects call kar rahe hain aur JS me filter karenge
-                //taaki 'react' aur 'React' dono chale.
                 let url = `${API_BASE}/projects`; 
-                //agar backend filtering use karni hai to: url = `${API_BASE}/projects?skill=${skill}`;
                 const res = await fetch(url);
                 const json = await res.json();
                 let projects = json.data || [];

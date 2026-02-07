@@ -14,7 +14,7 @@ async function main() {
       bio: 'Execution-focused Full Stack Developer specialized in building scalable web applications using Next.js, React.js, and TypeScript.',
       title: 'Full Stack Developer',
       location: 'Noida/Remote',
-      resumeUrl: 'https://joshishardulportfolio.netlify.app/', //portfolio link as placeholder
+      resumeUrl: 'https://drive.google.com/drive/folders/1YPS9HHz07CWtB0Eiw1WqZi0fSGhhWPm1?usp=sharing',
       socials: {
         create: [
           { platform: 'GitHub', url: 'https://github.com/Sharduljoshi2001' },

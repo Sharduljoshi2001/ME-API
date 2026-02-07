@@ -1,4 +1,4 @@
-//this controllor layer is responsible for taking and validating reques from the client(the frontend) and serving them up
+//this controllor layer is responsible for taking and validating request from the client(the frontend) and serving them up
 import { Request, Response, NextFunction } from 'express';
 import { ProfileService } from '../../business/services/profile.service';
 export const getProfile = async (req: Request, res: Response, next: NextFunction) => {

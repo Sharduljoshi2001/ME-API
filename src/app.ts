@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import profileRoutes from './api/routes/profile.routes';
-
+import projectRoutes from './api/routes/project.routes';
 const app = express();
 
 //middlewares
@@ -17,7 +17,7 @@ app.get('/health', (req, res) => {
 
 //mounting routes
 app.use('/api/v1/profile', profileRoutes);
-
+app.use('/api/v1/projects', projectRoutes);
 //global error handler (production ready)
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error(err.stack);

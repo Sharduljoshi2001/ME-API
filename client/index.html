@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shardul Joshi | Me-API Playground</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container"> 
+        <div id="profile-section" class="card">
+            <h1 style="color: #60a5fa;">Loading Profile...</h1>
+        </div>
+        <div class="card">
+            <h2 style="color: #34d399; margin-bottom: 10px;">Search Projects</h2>
+            <div class="search-box">
+                <input type="text" id="skill-input" placeholder="Enter skill (e.g., React, Node, Python)...">
+                <button onclick="searchProjects()" class="btn-primary">Filter</button>
+            </div>
+        </div>
+        <div id="projects-container" class="projects-grid">
+            </div>
+    </div>
+    <script>
+        const API_BASE = 'http://localhost:3001/api/v1';
+        //fetching profile
+        async function loadProfile() {
+            try {
+                const res = await fetch(`${API_BASE}/profile`);
+                const json = await res.json();
+                const data = json.data;
+                const profileHTML = `
+                    <div class="profile-header">
+                        <h1>${data.fullName}</h1>
+                        <p class="profile-title">${data.title}</p>
+                        <p>${data.bio}</p>
+                        <div class="social-links">
+                            ${data.socials.map(s => `
+                                <a href="${s.url}" target="_blank" class="btn-link">
+                                    ${s.platform}
+                                </a>
+                            `).join('')}
+                            <a href="${data.resumeUrl}" target="_blank" class="btn-link btn-resume">
+                                View Resume
+                            </a>
+                        </div>
+                    </div>
+                `;
+                document.getElementById('profile-section').innerHTML = profileHTML;
+            } catch (err) {
+                console.error("Profile Error:", err);
+                document.getElementById('profile-section').innerHTML = `<p class="error">Failed to load API. Ensure backend is running.</p>`;
+            }
+        }
+        //fetching projectslLogic for searching)
+        async function loadProjects(skill = '') {
+            const container = document.getElementById('projects-container');
+            container.innerHTML = '<p class="loading">Loading projects...</p>';
+            try {
+                //fetching all projects first (Backend filtering is also an option, 
+                // but client-side filtering is smoother for small datasets)
+                //hum seedha /projects call kar rahe hain aur JS me filter karenge
+                //taaki 'react' aur 'React' dono chale.
+                let url = `${API_BASE}/projects`; 
+                //agar backend filtering use karni hai to: url = `${API_BASE}/projects?skill=${skill}`;
+                const res = await fetch(url);
+                const json = await res.json();
+                let projects = json.data || [];
+                //client-side filtering for case insensitivity
+                if (skill) {
+                    const searchTerm = skill.toLowerCase();
+                    projects = projects.filter(p => 
+                        p.techStack.some(tech => tech.toLowerCase().includes(searchTerm))
+                    );
+                }
+                if (projects.length === 0) {
+                    container.innerHTML = `<p class="loading">No projects found for skill: "${skill}"</p>`;
+                    return;
+                }
+                //rendering projects
+                container.innerHTML = projects.map(p => `
+                    <div class="project-card">
+                        <h3>${p.title}</h3>
+                        <p class="project-desc">${p.description}</p>
+                        
+                        <div class="tech-stack">
+                            ${p.techStack.map(tech => `
+                                <span class="tech-tag">${tech}</span>
+                            `).join('')}
+                        </div>
+                        
+                        <div class="project-footer">
+                            ${p.repoUrl ? `<a href="${p.repoUrl}" target="_blank">View on GitHub ↗</a>` : ''}
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                console.error("Project Error:", err);
+                container.innerHTML = `<p class="error">Error loading projects.</p>`;
+            }
+        }
+        //search handler
+        function searchProjects() {
+            const skill = document.getElementById('skill-input').value;
+            loadProjects(skill);
+        }
+        //initializing
+        loadProfile();
+        loadProjects();
+        //allowing 'enter' key
+        document.getElementById('skill-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') searchProjects();
+        });
+    </script>
+</body>
+</html>
